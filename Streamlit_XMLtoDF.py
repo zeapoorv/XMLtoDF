@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import xml.etree.ElementTree as ET
 import pandas as pd
 import streamlit as st
@@ -51,18 +45,15 @@ def extract_data_from_xml(xml_content):
 def main():
     st.title("XML Data Extraction and Export")
 
-    # GUI file dialog to select multiple XML files
-    root = Tk()
-    file_paths = filedialog.askopenfilenames(title="Select XML Files", filetypes=[("XML files", "*.xml_EIP_eMeter_AEML")])
-    root.destroy()
+    # File uploader
+    uploaded_files = st.file_uploader("Upload XML Files", type=["xml"], accept_multiple_files=True)
 
-    # Process selected XML files
+    # Process uploaded XML files
     dataframes = []
-    for file_path in file_paths:
-        with open(file_path, 'r') as file:
-            xml_content = file.read()
-            df = extract_data_from_xml(xml_content)
-            dataframes.append(df)
+    for uploaded_file in uploaded_files:
+        xml_content = uploaded_file.read()
+        df = extract_data_from_xml(xml_content)
+        dataframes.append(df)
 
     # Display extracted data on screen
     if dataframes:
@@ -76,8 +67,7 @@ def main():
             combined_df.to_excel(export_file_path, index=False)
             st.success(f"DataFrame exported to {export_file_path}")
     else:
-        st.write("No XML files selected.")
+        st.write("No XML files uploaded.")
 
 if __name__ == "__main__":
     main()
-
